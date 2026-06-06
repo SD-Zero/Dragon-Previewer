@@ -55,7 +55,7 @@
         .lock-icon.locked { color: #ff4444; }
 
         .button-stack { display: flex; flex-direction: column; padding: 10px; gap: 5px; }
-        button.part-btn { background: #222; color: #ddd; border: 1px solid #333; padding: 10px; text-align: left; border-radius: 4px; cursor: pointer; font-size: 12px; text-transform: uppercase; }
+        button.part-btn { background: #222; color: #ddd; border: 1px solid #333; padding: 10px; text-align: left; border-radius: 4px; cursor: pointer; font-size: 12px; }
         button.part-btn:hover { background: #333; border-color: #00d4ff; }
         
         select.part-select, .palette-select { background: #222; color: white; border: 1px solid #333; padding: 10px; border-radius: 4px; width: 100%; cursor: pointer; font-size: 12px; }
@@ -128,23 +128,23 @@
     <hr class="section-divider">
 
     <details open>
-        <summary>HORNS <span class="lock-icon" id="lock-horn" onclick="toggleLock(event, 'horn')">🔓</span></summary>
-        <div class="button-stack" id="horn-buttons"></div>
+        <summary>HORNS <span class="lock-icon" id="lock-horns" onclick="toggleLock(event, 'horns')">🔓</span></summary>
+        <div class="button-stack" id="btns-horns"></div>
     </details>
 
     <details>
         <summary>SPINE <span class="lock-icon" id="lock-spine" onclick="toggleLock(event, 'spine')">🔓</span></summary>
-        <div class="button-stack" id="spine-buttons"></div>
+        <div class="button-stack" id="btns-spine"></div>
     </details>
 
     <details>
         <summary>WINGS <span class="lock-icon" id="lock-wing" onclick="toggleLock(event, 'wing')">🔓</span></summary>
-        <div class="button-stack" id="wing-buttons"></div>
+        <div class="button-stack" id="btns-wing"></div>
     </details>
 
     <details>
         <summary>TAIL <span class="lock-icon" id="lock-tail" onclick="toggleLock(event, 'tail')">🔓</span></summary>
-        <div class="button-stack" id="tail-buttons"></div>
+        <div class="button-stack" id="btns-tail"></div>
     </details>
 
     <details>
@@ -172,7 +172,7 @@
 
     <details>
         <summary>PATTERN <span class="lock-icon" id="lock-pattern" onclick="toggleLock(event, 'pattern')">🔓</span></summary>
-        <div class="button-stack" id="pattern-buttons"></div>
+        <div class="button-stack" id="btns-pattern"></div>
     </details>
 
     <hr class="section-divider" style="margin-top:20px;">
@@ -216,7 +216,7 @@
 
 <script>
     const locks = {
-        horn: false, spine: false, wing: false, tail: false, eyeshape: false, pattern: false,
+        horns: false, spine: false, wing: false, tail: false, eyeshape: false, pattern: false,
         'eye-color': false, 'primary-color': false, 'secondary-color': false, 'tertiary-color': false
     };
 
@@ -250,8 +250,7 @@
     const spineList = ['double', 'fractal', 'oceanic', 'pinfeather', 'quilled', 'none'];
     const wingList = ['battleworn', 'classical', 'continuous', 'downy', 'frilled', 'hooked', 'mothlike', 'none'];
     const tailList = ['aquatic', 'bladed', 'chimera', 'feathery', 'finned', 'kaiju', 'serpentine'];
-    const patternNames = ['avian', 'nova', 'speckled', 'scorched', 'leviathan', 'jetstream', 'verdant'];
-    const patternFiles = Array.from({length: 6}, (_, i) => `Dragon_Pattern0${i}_HQ.png`);
+    const patternList = ['avian', 'nova', 'speckled', 'scorched', 'leviathan', 'jetstream', 'verdant'];
     const eyeTextureList = Array.from({length: 12}, (_, i) => `Eye${i.toString().padStart(2, '0')}_Texture.png`);
 
     function toggleLock(event, key) {
@@ -263,28 +262,7 @@
         el.classList.toggle('locked', locks[key]);
     }
 
-    // Build Trait Buttons UI
-    const traitUIConfig = { 'horn': hornList, 'spine': spineList, 'wing': wingList, 'tail': tailList };
-    Object.keys(traitUIConfig).forEach(type => {
-        const container = document.getElementById(`${type}-buttons`);
-        traitUIConfig[type].forEach(trait => {
-            const btn = document.createElement('button');
-            btn.className = 'part-btn';
-            btn.textContent = trait;
-            btn.onclick = () => togglePart(type, trait);
-            container.appendChild(btn);
-        });
-    });
-
-    const patContainer = document.getElementById('pattern-buttons');
-    patternNames.forEach((name, idx) => {
-        const btn = document.createElement('button');
-        btn.className = 'part-btn';
-        btn.textContent = name;
-        btn.onclick = () => changePattern(patternFiles[idx]);
-        patContainer.appendChild(btn);
-    });
-
+    // Dynamic BG Animation
     const dbg = document.getElementById('diamond-bg');
     for(let i=0; i<35; i++) {
         const d = document.createElement('div');
@@ -300,15 +278,38 @@
     let colors = { primary: {r:255, g:255, b:255}, secondary: {r:255, g:255, b:255}, tertiary: {r:255, g:255, b:255}, eye: {r:255, g:255, b:255} };
     let currentPattern = 'Dragon_Pattern00_HQ.png';
     let currentEyeShape = 'Eye00_Texture.png';
-    let activeParts = { eye: 'Eyes_LQ', horn: 'sleek', spine: 'double', wing: 'classical', tail: 'finned' };
+    let activeParts = { eye: 'Eyes_LQ', horns: 'sleek', spine: 'quilled', wing: 'classical', tail: 'serpentine' };
 
     const offscreenCanvas = document.createElement('canvas');
     const offscreenCtx = offscreenCanvas.getContext('2d', { willReadFrequently: true });
 
-    // Setup Exclusions and Filters UI
+    // Setup UI Buttons
+    const setupBtns = (id, list, type) => {
+        const container = document.getElementById(id);
+        list.forEach(t => {
+            const b = document.createElement('button');
+            b.className = 'part-btn';
+            b.textContent = t.toUpperCase();
+            if (type === 'pattern') {
+                const idx = list.indexOf(t).toString().padStart(2, '0');
+                b.onclick = () => changePattern(`Dragon_Pattern${idx}_HQ.png`);
+            } else {
+                b.onclick = () => togglePart(type, t);
+            }
+            container.appendChild(b);
+        });
+    };
+
+    setupBtns('btns-horns', hornList, 'horns');
+    setupBtns('btns-spine', spineList, 'spine');
+    setupBtns('btns-wing', wingList, 'wing');
+    setupBtns('btns-tail', tailList, 'tail');
+    setupBtns('btns-pattern', patternList, 'pattern');
+
+    // Advanced Randomizer Setup
     const traitExContainer = document.getElementById('trait-exclusions');
     const paletteFilterContainer = document.getElementById('palette-filters');
-    const traitCategories = { Horns: hornList, Spines: spineList, Wings: wingList, Tail: tailList };
+    const traitCategories = { Horns: hornList, Spine: spineList, Wings: wingList, Tail: tailList };
     
     Object.keys(traitCategories).forEach(cat => {
         const h = document.createElement('div'); h.style.margin = "5px 0"; h.style.fontWeight = "bold"; h.textContent = cat;
@@ -346,18 +347,22 @@
         const wList = getFilteredList(wingList);
         const tList = getFilteredList(tailList);
 
-        if (!locks.horn && hList.length) activeParts.horn = hList[Math.floor(Math.random() * hList.length)];
+        if (!locks.horns && hList.length) activeParts.horns = hList[Math.floor(Math.random() * hList.length)];
         if (!locks.spine && sList.length) activeParts.spine = sList[Math.floor(Math.random() * sList.length)];
         if (!locks.wing && wList.length) activeParts.wing = wList[Math.floor(Math.random() * wList.length)];
         if (!locks.tail && tList.length) activeParts.tail = tList[Math.floor(Math.random() * tList.length)];
-        if (!locks.pattern) currentPattern = patternFiles[Math.floor(Math.random() * patternFiles.length)];
         
+        if (!locks.pattern) {
+            const rndIdx = Math.floor(Math.random() * patternList.length).toString().padStart(2, '0');
+            currentPattern = `Dragon_Pattern${rndIdx}_HQ.png`;
+        }
         updateAll();
     }
 
     function getRndColor(slot) {
         const checks = document.querySelectorAll(`.pal-check-${slot}:checked`);
-        let pools = (checks.length > 0) ? paletteData.filter(p => Array.from(checks).map(c => c.getAttribute('data-palette')).includes(p.name)) : paletteData;
+        let pools = (checks.length > 0) ? 
+            paletteData.filter(p => Array.from(checks).map(c => c.getAttribute('data-palette')).includes(p.name)) : paletteData;
         const chosenPalette = pools[Math.floor(Math.random() * pools.length)];
         return hexToRgb(chosenPalette.hexes[Math.floor(Math.random() * chosenPalette.hexes.length)]);
     }
@@ -384,21 +389,20 @@
         
         for (let i = 0; i < data.length; i += 4) {
             const r = data[i], g = data[i+1], b = data[i+2];
-            
             if (mode === 'eye') {
                 if (r > 120 && g > 100) {
                     const factor = (r + g) / 510;
                     data[i] = colors.eye.r * factor; data[i+1] = colors.eye.g * factor; data[i+2] = colors.eye.b * factor;
                 } else { data[i] = 0; data[i+1] = 0; data[i+2] = 0; }
                 data[i+3] = 255;
-            } 
-            else if (mode === 'tertiary-only') {
-                // For Horns/Spines: Apply Tertiary to any visible greyscale/colored areas
+            } else if (mode === 'tertiary_only') {
                 const lum = (0.299 * r + 0.587 * g + 0.114 * b) / 255;
-                if (lum < 0.03) continue;
-                data[i] = colors.tertiary.r * lum; data[i+1] = colors.tertiary.g * lum; data[i+2] = colors.tertiary.b * lum;
-            }
-            else {
+                if (lum > 0.05) { 
+                    data[i] = colors.tertiary.r * lum; 
+                    data[i+1] = colors.tertiary.g * lum; 
+                    data[i+2] = colors.tertiary.b * lum; 
+                }
+            } else {
                 const lum = (0.299 * r + 0.587 * g + 0.114 * b) / 255;
                 if (lum < 0.03) continue;
                 let target = null;
@@ -425,12 +429,8 @@
                     if(nodeName.includes('eyes_lq')) obj.visible = (name === 'Eyes_LQ');
                     if(nodeName.includes('eyelash_lq_mesh')) obj.visible = (name === 'Eyelash_LQ_Mesh');
                 } else {
-                    let catMatch = false;
-                    if(type === 'horn' && hornList.includes(nodeName)) catMatch = true;
-                    if (type === 'spine' && spineList.includes(nodeName)) catMatch = true;
-                    if (type === 'wing' && wingList.includes(nodeName)) catMatch = true;
-                    if (type === 'tail' && tailList.includes(nodeName)) catMatch = true;
-                    if(catMatch) obj.visible = (nodeName === name.toLowerCase());
+                    let list = (type === 'horns') ? hornList : (type === 'spine') ? spineList : (type === 'wing') ? wingList : tailList;
+                    if (list.includes(nodeName)) obj.visible = (nodeName === name.toLowerCase());
                 }
             }
         });
@@ -439,12 +439,12 @@
     async function updateAll() {
         if (!main.model) return;
         const bodyBake = await processTexture(currentPattern);
-        const wtBake = await processTexture('Mat_Dragon_Wings_Tails.png');
-        const hsBake = await processTexture('Mat_Dragon_Horns_Spines.png', 'tertiary-only');
+        const wtBake = await processTexture('Dragon_Wings_Tails.png'); 
+        const hsBake = await processTexture('Dragon_Horns_Spines.png', 'tertiary_only');
         const eyeBake = await processTexture(currentEyeShape, 'eye');
         
         const materialMap = { 
-            "Mat_DragonBody": bodyBake, 
+            "Mat_Dragon_Pattern00.png": bodyBake, 
             "Mat_Dragon_Wings_Tails": wtBake, 
             "Mat_Dragon_Horns_Spines": hsBake, 
             "Mat_Eyes": eyeBake 
@@ -465,8 +465,9 @@
     }
 
     function switchPalette(type, paletteName) {
-        const container = document.getElementById(`${type}-container`);
-        container.querySelectorAll('.palette-group').forEach(pg => pg.classList.toggle('active', pg.getAttribute('data-name') === paletteName));
+        document.getElementById(`${type}-container`).querySelectorAll('.palette-group').forEach(pg => {
+            pg.classList.toggle('active', pg.getAttribute('data-name') === paletteName);
+        });
     }
 
     ["primary", "secondary", "tertiary", "eye"].forEach(type => {
@@ -476,17 +477,14 @@
             const opt = document.createElement('option');
             opt.value = p.name; opt.textContent = p.name;
             select.appendChild(opt);
-
-            const pg = document.createElement('div');
-            pg.className = "palette-group";
+            const pg = document.createElement('div'); pg.className = "palette-group";
             if(idx === 0) pg.classList.add('active');
             pg.setAttribute('data-name', p.name);
             pg.innerHTML = `<div class="color-grid"></div>`;
             container.appendChild(pg);
             const grid = pg.querySelector('.color-grid');
             p.hexes.forEach(hex => {
-                const s = document.createElement('div');
-                s.className = "swatch"; s.style.background = hex;
+                const s = document.createElement('div'); s.className = "swatch"; s.style.background = hex;
                 s.onclick = () => { colors[type] = hexToRgb(hex); updateAll(); };
                 grid.appendChild(s);
             });
@@ -499,7 +497,7 @@
 
     document.querySelectorAll('details').forEach((det) => {
         det.addEventListener('toggle', () => {
-            if (det.open) document.querySelectorAll('details').forEach((other) => { if (other !== det) other.removeAttribute('open'); });
+            if (det.open) document.querySelectorAll('details').forEach((o) => { if (o !== det) o.removeAttribute('open'); });
         });
     });
 
