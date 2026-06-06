@@ -1,0 +1,474 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Unofficial Dragon Previewer</title>
+    <script type="module" src="https://unpkg.com/@google/model-viewer/dist/model-viewer.min.js"></script>
+    <style>
+        body { margin: 0; background: #000; color: white; font-family: sans-serif; display: flex; height: 100vh; overflow: hidden; }
+        
+        /* --- BRANDED INITIALIZING SCREEN --- */
+        #loading-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #000; display: flex; flex-direction: column; justify-content: center; align-items: center; z-index: 100; transition: opacity 0.8s ease; overflow: hidden; }
+        .logo-wrap { text-align: center; margin-bottom: 50px; position: relative; z-index: 2; }
+        .sub-logo { font-size: 10px; letter-spacing: 3px; color: #ff4d00; text-transform: uppercase; font-weight: bold; margin-bottom: 5px; display: block; opacity: 0.8; }
+        .main-logo { font-size: 28px; letter-spacing: 6px; color: #fff; text-transform: uppercase; font-weight: 900; text-shadow: 0 0 20px rgba(255, 77, 0, 0.6); }
+        
+        .spinner-container { position: relative; width: 80px; height: 80px; margin-bottom: 25px; }
+        .spin-diamond { position: absolute; width: 10px; height: 16px; background: #ff4d00; box-shadow: 0 0 10px #ff4d00; clip-path: polygon(50% 0%, 100% 50%, 50% 100%, 0% 50%); left: 35px; top: 0; transform-origin: 5px 40px; animation: diamond-spin 1.4s infinite linear; opacity: 0; }
+        .spin-diamond:nth-child(1) { animation-delay: 0s; opacity: 1; }
+        .spin-diamond:nth-child(2) { animation-delay: -0.15s; opacity: 0.7; }
+        .spin-diamond:nth-child(3) { animation-delay: -0.30s; opacity: 0.4; }
+        .spin-diamond:nth-child(4) { animation-delay: -0.45s; opacity: 0.1; }
+        
+        @keyframes diamond-spin { 0% { transform: rotate(0deg); opacity: 1; } 100% { transform: rotate(360deg); opacity: 0; } }
+
+        .stars { position: absolute; width: 100%; height: 100%; background-image: radial-gradient(1px 1px at 25px 35px, #fff, rgba(0,0,0,0)), radial-gradient(1px 1px at 60px 120px, #fff, rgba(0,0,0,0)), radial-gradient(2px 2px at 180px 190px, #fff, rgba(0,0,0,0)); background-size: 400px 400px; opacity: 0.4; animation: twinkle 5s infinite alternate; }
+        .diamond-container { position: absolute; width: 100%; height: 100%; opacity: 0.08; pointer-events: none; }
+        .bg-diamond { position: absolute; background: linear-gradient(135deg, #ff4d00 0%, #9b51e0 100%); clip-path: polygon(50% 0%, 100% 50%, 50% 100%, 0% 50%); animation: pulse 8s infinite ease-in-out; }
+        .shimmer-sweep { position: absolute; top: 0; left: -100%; width: 60%; height: 100%; background: linear-gradient(90deg, transparent, rgba(255,255,255,0.03), transparent); transform: skewX(-20deg); animation: sweep 6s infinite; }
+        @keyframes twinkle { from { opacity: 0.2; } to { opacity: 0.6; } }
+        @keyframes sweep { 0% { left: -120%; } 100% { left: 220%; } }
+        @keyframes pulse { 0%, 100% { transform: scale(1); opacity: 0.7; } 50% { transform: scale(1.08); opacity: 1; } }
+        .loading-text { font-size: 11px; letter-spacing: 4px; color: #888; text-transform: uppercase; font-weight: 300; }
+
+        /* --- VIEWER & SIDEBAR --- */
+        .viewer-container { flex: 1; position: relative; background: radial-gradient(#333, #000); }
+        model-viewer { width: 100%; height: 100%; --poster-color: transparent; }
+        
+        .sidebar { width: 320px; background: #000; border-left: 2px solid #ff4d00; display: flex; flex-direction: column; overflow-y: auto; padding: 10px; transition: all 0.3s ease; box-shadow: -5px 0 20px rgba(255, 77, 0, 0.2); }
+        
+        .disclaimer-text { font-size: 9px; color: #555; text-align: center; margin-bottom: 10px; text-transform: uppercase; letter-spacing: 1px; }
+
+        .random-box { display: grid; grid-template-columns: 1fr; gap: 5px; margin-bottom: 10px; padding-bottom: 10px; border-bottom: 1px solid #222; }
+        .rnd-btn { background: #ff4d00; color: #000; border: none; padding: 10px; font-weight: bold; font-size: 10px; cursor: pointer; border-radius: 4px; text-transform: uppercase; transition: 0.3s; }
+        .rnd-btn:hover { background: #fff; box-shadow: 0 0 10px #ff4d00; }
+
+        .section-label { font-size: 11px; letter-spacing: 2px; color: #fff; margin-top: 15px; margin-bottom: 5px; padding-left: 5px; }
+        .section-divider { border: 0; border-top: 1px solid #333; margin-bottom: 10px; width: 100%; }
+
+        details { margin-bottom: 5px; background: #111; border-radius: 4px; border: 1px solid #222; }
+        summary { padding: 12px; font-weight: bold; cursor: pointer; background: #111; display: flex; justify-content: space-between; align-items: center; font-size: 13px; list-style: none; color: #ff4d00; }
+        
+        .lock-icon { cursor: pointer; font-size: 14px; padding: 0 5px; transition: transform 0.1s; }
+        .lock-icon:hover { transform: scale(1.2); }
+        .lock-icon.locked { color: #ff4444; }
+
+        .button-stack { display: flex; flex-direction: column; padding: 10px; gap: 5px; }
+        button.part-btn { background: #222; color: #ddd; border: 1px solid #333; padding: 10px; text-align: left; border-radius: 4px; cursor: pointer; font-size: 12px; }
+        button.part-btn:hover { background: #333; border-color: #ff4d00; }
+        
+        select.part-select, .palette-select { background: #222; color: white; border: 1px solid #333; padding: 10px; border-radius: 4px; width: 100%; cursor: pointer; font-size: 12px; }
+
+        .palette-group { background: #0a0a0a; padding: 5px; border-top: 1px solid #222; display: none; }
+        .palette-group.active { display: block; }
+        .color-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 5px; padding: 10px; }
+        .swatch { width: 100%; aspect-ratio: 1; border-radius: 3px; cursor: pointer; border: 1px solid #444; transition: transform 0.1s; }
+        .swatch:hover { transform: scale(1.1); border-color: white; }
+
+        .adv-settings { padding: 10px; font-size: 11px; color: #888; }
+        .adv-settings h4 { color: #ff4d00; margin: 10px 0 5px 0; text-transform: uppercase; font-size: 10px; }
+        .adv-row { display: flex; align-items: center; gap: 8px; margin-bottom: 4px; }
+        .adv-row input[type="checkbox"] { accent-color: #ff4d00; }
+
+        @media (max-width: 768px) {
+            body { flex-direction: column; }
+            .sidebar { width: 100%; height: 45vh; border-left: none; border-top: 2px solid #ff4d00; }
+            .viewer-container { height: 55vh; }
+        }
+    </style>
+</head>
+<body>
+
+<div id="loading-overlay">
+    <div class="stars"></div>
+    <div class="diamond-container" id="diamond-bg"></div>
+    <div class="shimmer-sweep"></div>
+    <div class="logo-wrap">
+        <span class="sub-logo">Unofficial AJPW</span>
+        <h1 class="main-logo">Dragon Previewer</h1>
+    </div>
+    <div class="spinner-container">
+        <div class="spin-diamond"></div>
+        <div class="spin-diamond"></div>
+        <div class="spin-diamond"></div>
+        <div class="spin-diamond"></div>
+    </div>
+    <p class="loading-text">Initializing Assets</p>
+</div>
+
+<div class="viewer-container">
+    <model-viewer id="dragon" src="dragon-main.glb" camera-controls auto-rotate interaction-prompt="none" shadow-intensity="1" shadow-softness="1" exposure="1.1" environment-image="neutral"></model-viewer>
+</div>
+
+<div class="sidebar">
+    <div class="disclaimer-text">DISCLAIMER: This project is unofficial. All models/textures belong to WildWorks.</div>
+
+    <details>
+        <summary>ADVANCED RANDOMIZER SETTINGS</summary>
+        <div class="adv-settings">
+            <h4>Trait Exclusions</h4>
+            <div id="trait-exclusions"></div>
+            
+            <h4>Allowed Palettes (Colors)</h4>
+            <div style="font-size: 9px; margin-bottom: 8px;">If none selected, all are allowed.</div>
+            <div id="palette-filters"></div>
+        </div>
+    </details>
+
+    <div class="random-box">
+        <button class="rnd-btn" onclick="randomizeAll()" style="background:#fff; border: 2px solid #ff4d00;">Randomize All</button>
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 5px; margin-top: 5px;">
+            <button class="rnd-btn" onclick="randomizeTraits()">Random Traits</button>
+            <button class="rnd-btn" onclick="randomizeColors()">Random Colors</button>
+        </div>
+    </div>
+
+    <div class="section-label">TRAITS</div>
+    <hr class="section-divider">
+
+    <details open>
+        <summary>HORNS <span class="lock-icon" id="lock-horn" onclick="toggleLock(event, 'horn')">🔓</span></summary>
+        <div class="button-stack" id="horn-buttons"></div>
+    </details>
+
+    <details>
+        <summary>SPINE <span class="lock-icon" id="lock-spine" onclick="toggleLock(event, 'spine')">🔓</span></summary>
+        <div class="button-stack" id="spine-buttons"></div>
+    </details>
+
+    <details>
+        <summary>WINGS <span class="lock-icon" id="lock-wing" onclick="toggleLock(event, 'wing')">🔓</span></summary>
+        <div class="button-stack" id="wing-buttons"></div>
+    </details>
+
+    <details>
+        <summary>TAIL <span class="lock-icon" id="lock-tail" onclick="toggleLock(event, 'tail')">🔓</span></summary>
+        <div class="button-stack" id="tail-buttons"></div>
+    </details>
+
+    <details>
+        <summary>EYE SHAPE <span class="lock-icon" id="lock-eyeshape" onclick="toggleLock(event, 'eyeshape')">🔓</span></summary>
+        <div class="button-stack">
+            <button class="part-btn" onclick="togglePart('eye', 'Eyes_LQ')">No Lashes</button>
+            <button class="part-btn" onclick="togglePart('eye', 'Eyelash_LQ_Mesh')">Lashes</button>
+            <hr style="border:0; border-top:1px solid #333; margin:5px 0;">
+            <select id="eyeShapeSelect" class="part-select" onchange="changeEyeShape(this.value)">
+                </select>
+        </div>
+    </details>
+
+    <details>
+        <summary>PATTERN <span class="lock-icon" id="lock-pattern" onclick="toggleLock(event, 'pattern')">🔓</span></summary>
+        <div class="button-stack" id="pattern-buttons"></div>
+    </details>
+
+    <hr class="section-divider" style="margin-top:20px;">
+    <div class="section-label">COLORING</div>
+    <hr class="section-divider">
+
+    <details>
+        <summary>EYE COLOR <span class="lock-icon" id="lock-eye-color" onclick="toggleLock(event, 'eye-color')">🔓</span></summary>
+        <div class="button-stack">
+            <select class="palette-select" onchange="switchPalette('eye', this.value)"></select>
+            <div id="eye-container"></div>
+        </div>
+    </details>
+
+    <details>
+        <summary>PRIMARY COLOR <span class="lock-icon" id="lock-primary-color" onclick="toggleLock(event, 'primary-color')">🔓</span></summary>
+        <div class="button-stack">
+            <select class="palette-select" onchange="switchPalette('primary', this.value)"></select>
+            <div id="primary-container"></div>
+        </div>
+    </details>
+
+    <details>
+        <summary>SECONDARY COLOR <span class="lock-icon" id="lock-secondary-color" onclick="toggleLock(event, 'secondary-color')">🔓</span></summary>
+        <div class="button-stack">
+            <select class="palette-select" onchange="switchPalette('secondary', this.value)"></select>
+            <div id="secondary-container"></div>
+        </div>
+    </details>
+
+    <details>
+        <summary>TERTIARY COLOR <span class="lock-icon" id="lock-tertiary-color" onclick="toggleLock(event, 'tertiary-color')">🔓</span></summary>
+        <div class="button-stack">
+            <select class="palette-select" onchange="switchPalette('tertiary', this.value)"></select>
+            <div id="tertiary-container"></div>
+        </div>
+    </details>
+
+</div>
+
+<script>
+    const locks = {
+        horn: false, spine: false, wing: false, tail: false, eyeshape: false, pattern: false,
+        'eye-color': false, 'primary-color': false, 'secondary-color': false, 'tertiary-color': false
+    };
+
+    const paletteData = [
+        { name: "Amethyst Wildflower", hexes: ["#8C73AB", "#BDABD2", "#A174AB", "#CCADD0", "#724B79", "#A56FA9", "#BB8DBE", "#7B4B6C", "#AF7199", "#9E8392", "#977D87", "#926075"] },
+        { name: "Cerulean Sky", hexes: ["#C3F4FF", "#23CBFE", "#26BCEA", "#42A8C7", "#7FDFFF", "#8ED5E7", "#CAEFFF", "#06AEFF", "#7DB3E2", "#6CB9FF", "#88A5FF", "#8EA5E7", "#94A2E6"] },
+        { name: "Dreamy Lilac", hexes: ["#8783FF", "#A190E9", "#9B82FE", "#A988DB", "#BD7CF8", "#A168D6", "#C790EB", "#9B4CCF", "#DB92F9", "#A64EC7", "#E171FF", "#EDA1FF", "#A120C1", "#BC3DD6", "#D889C5"] },
+        { name: "Dusty Taupe", hexes: ["#D2ACAA", "#D1B4AC", "#A39289", "#D1BDAD", "#D9B573", "#D9B574", "#D4CBB9", "#ECCF93", "#AC9B74", "#D7CCA0", "#D2CCAB", "#BBBA98", "#BCC5A0"] },
+        { name: "Earthy Umber", hexes: ["#AA7474", "#774E47", "#79544C", "#AB7D73", "#A26044", "#9C4819", "#9B4912", "#5C3525", "#AD8A73", "#776355", "#824F16", "#6E5F50", "#B76F29", "#976230", "#52461B"] },
+        { name: "Flaxen Ochre", hexes: ["#DFA219", "#957730", "#C28B06", "#DCAB28", "#C6A100", "#7B6607", "#CFB94C", "#807325", "#EDDC8F", "#ADA377", "#CDBA4F", "#968B2A", "#BCBC78", "#CACC49", "#D5DC88", "#CBD2AC"] },
+        { name: "Florid Vermillion", hexes: ["#950808", "#922F2F", "#B41E1F", "#EA201B", "#FC0706", "#F05B56", "#AA3B35", "#AD3A32", "#D3442D", "#903C2D", "#BC2B0C", "#CC634C", "#B04000", "#901C3B"] },
+        { name: "Forested Juniper", hexes: ["#3D4217", "#6F7A5A", "#474C39", "#657E49", "#285112", "#406F4B", "#294531", "#289464", "#257F56", "#174D36", "#256A4D", "#4D7567", "#42FAC6", "#2C978D"] },
+        { name: "Hazel Olive", hexes: ["#607A85", "#706D41", "#6F6F44", "#C0C003", "#5E5D04", "#78794C", "#9CA12E", "#707248", "#636924", "#A1AC4B", "#99AB33", "#819531", "#7D8654", "#5E6741", "#B4CB9E"] },
+        { name: "Lush Berry", hexes: ["#DD40BF", "#AE0488", "#CC4DA8", "#952D76", "#DE248B", "#B83278", "#962D54", "#A03F65", "#CB4E81", "#D02957", "#B92B51", "#B33357", "#EA3E6D"] },
+        { name: "Misty Starlight", hexes: ["#B2B3B5", "#999999", "#CACBCD", "#EFF0F2", "#E7E8EA", "#D3CFC5", "#ADDFF1", "#ACC5D4", "#ABB4D3", "#E1E8FF", "#B8C1DD", "#B0ABD1", "#C4B9CB"] },
+        { name: "Oceanic Sapphire", hexes: ["#3EA8CA", "#1B718B", "#4B6D7C", "#2F7894", "#0B64A3", "#5184B4", "#4C89F2", "#1F3A70", "#3F63B5", "#416FE4", "#0036DB", "#4B69CD", "#2F4495", "#062495", "#4000FB"] },
+        { name: "Opulant Royalty", hexes: ["#6160C3", "#4E4DC9", "#6761BB", "#402F8F", "#643EEC", "#6A4CCC", "#5B3BC8", "#6032B4", "#7037B4", "#6A2F95", "#6E1586", "#690A83", "#7A3987", "#822D95"] },
+        { name: "Pale Pastel", hexes: ["#FEDFBD", "#FEE6A5", "#FBF5E0", "#FFF1BA", "#FDFBD1", "#DBE2C3", "#BEFEC9", "#DDEDEA", "#D2EBF2", "#DAEAF6", "#BAD5FF", "#D5BCFF", "#E9DFF6", "#FFC8D1", "#FFE0E5"] },
+        { name: "Rosy Sunset", hexes: ["#FF6D70", "#DC7E72", "#EAA191", "#E2BAD4", "#D0ABC6", "#FF7FC0", "#E6BBCF", "#D998B2", "#E692B2", "#FF7EA1", "#FB759A", "#E77492", "#FF6882", "#FFB3BD"] },
+        { name: "Russet Mahogany", hexes: ["#4E0C09", "#7D0C06", "#5D0507", "#691819", "#6B352A", "#441E06", "#5D3A48", "#773A49", "#5D1023", "#6F192C", "#470F1E"] },
+        { name: "Seafoam Lagoon", hexes: ["#A1DCB8", "#86D6AB", "#80FFBE", "#45C78B", "#93EAC4", "#3EF2A8", "#2EE196", "#AED2C4", "#24AB85", "#39CFB0", "#ABD3CD", "#8DEAE4", "#7FABAC", "#B8DDE3", "#729CAA"] },
+        { name: "Shady Dark", hexes: ["#333230", "#151515", "#514745", "#2C2B29", "#1B4457", "#172547", "#071961", "#00027C", "#01003F", "#29267E", "#24105E", "#381B94", "#3E0080", "#674B79", "#2D0040", "#3F2D4B", "#480D53"] },
+        { name: "Smoky Dust", hexes: ["#434247", "#7B7B7B", "#646567", "#514C4B", "#7180AB", "#47577D", "#505360", "#6D7197", "#8984C6", "#7F73AB", "#564C76", "#6E6679", "#767076"] },
+        { name: "Sunny Amber", hexes: ["#F9DF96", "#FFCC35", "#FFBF04", "#FDCA1F", "#F6E281", "#F1D241", "#FEED95", "#FFE004", "#FCD90D", "#FBF148", "#EFEFAC", "#FFFDC6", "#FFFF68", "#E8E993"] },
+        { name: "Verdant Lush", hexes: ["#ACCB67", "#CBDD85", "#E0FF7F", "#D3E9AB", "#8ECC4B", "#BEEA94", "#629431", "#8ABE6E", "#72D33F", "#378419", "#94FE71", "#72B47E", "#0EB23B", "#39AC74", "#74AA96"] },
+        { name: "Vibrant Neon", hexes: ["#FF6512", "#FFFF13", "#DEFF13", "#BEFF00", "#7AFE49", "#31F84B", "#17F9AC", "#67FED8", "#21FEC0", "#21FEFC", "#2A4FFF", "#8367FF", "#6308F9", "#C602FA", "#FF00FF", "#FE66CE", "#FF007F", "#FF235F"] },
+        { name: "Warm Tangerine", hexes: ["#FD9F7F", "#ECAE91", "#EB6923", "#F26E23", "#FF7C31", "#FFA36C", "#CB7B4C", "#E59764", "#FCA14E", "#FF7F02", "#CF8436", "#FAB771", "#CD8E4D", "#F8D6A6", "#FDA203"] }
+    ];
+
+    const hornList = ['broken', 'branched', 'curled', 'crystalline', 'deep sea', 'sleek', 'quad', 'none'];
+    const spineList = ['double', 'fractal', 'oceanic', 'pinfeather', 'quilled', 'none'];
+    const wingList = ['battleworn', 'classical', 'continuous', 'downy', 'frilled', 'hooked', 'mothlike', 'none'];
+    const tailList = ['aquatic', 'bladed', 'chimera', 'feathery', 'finned', 'kaiju', 'serpentine'];
+    const patternList = ['avian', 'nova', 'speckled', 'scorched', 'leviathan', 'jetstream', 'verdant'];
+    const eyeTextureList = Array.from({length: 12}, (_, i) => `Eye${i.toString().padStart(2, '0')}_Texture.png`);
+
+    const main = document.querySelector('#dragon');
+    let colors = { primary: {r:255, g:255, b:255}, secondary: {r:255, g:255, b:255}, tertiary: {r:255, g:255, b:255}, eye: {r:255, g:255, b:255} };
+    let currentPattern = 'Dragon_Pattern00_HQ.png';
+    let currentEyeShape = 'Eye00_Texture.png';
+    let activeParts = { eye: 'Eyes_LQ', horn: 'sleek', spine: 'double', wing: 'classical', tail: 'serpentine' };
+
+    const offscreenCanvas = document.createElement('canvas');
+    const offscreenCtx = offscreenCanvas.getContext('2d', { willReadFrequently: true });
+
+    function toggleLock(event, key) {
+        event.preventDefault();
+        event.stopPropagation();
+        locks[key] = !locks[key];
+        const el = event.target;
+        el.textContent = locks[key] ? '🔒' : '🔓';
+        el.classList.toggle('locked', locks[key]);
+    }
+
+    // --- UI BUILDER ---
+    function buildTraitUI(list, type, containerId) {
+        const cont = document.getElementById(containerId);
+        list.forEach(item => {
+            const btn = document.createElement('button');
+            btn.className = 'part-btn';
+            btn.textContent = item.toUpperCase();
+            btn.onclick = () => togglePart(type, item);
+            cont.appendChild(btn);
+        });
+    }
+
+    // --- INITIALIZE UI ---
+    buildTraitUI(hornList, 'horn', 'horn-buttons');
+    buildTraitUI(spineList, 'spine', 'spine-buttons');
+    buildTraitUI(wingList, 'wing', 'wing-buttons');
+    buildTraitUI(tailList, 'tail', 'tail-buttons');
+
+    patternList.forEach((p, idx) => {
+        const btn = document.createElement('button');
+        btn.className = 'part-btn';
+        btn.textContent = p.toUpperCase();
+        btn.onclick = () => changePattern(`Dragon_Pattern0${idx}_HQ.png`);
+        document.getElementById('pattern-buttons').appendChild(btn);
+    });
+
+    const eyeSelect = document.getElementById('eyeShapeSelect');
+    const eyeLabels = ["Ordinary", "Surprised", "Cute", "Creepy", "Spooky", "Swirly", "Blank", "Crossed Out", "Starry", "Lovely", "Suspicious", "Striking"];
+    eyeTextureList.forEach((tex, idx) => {
+        const opt = document.createElement('option');
+        opt.value = tex; opt.textContent = eyeLabels[idx];
+        eyeSelect.appendChild(opt);
+    });
+
+    // --- LOGIC ---
+    function getFilteredList(list) {
+        const checked = Array.from(document.querySelectorAll(`[id^="ex-"]`))
+                            .filter(i => i.checked)
+                            .map(i => i.id.replace('ex-', ''));
+        return list.filter(item => !checked.includes(item));
+    }
+
+    function randomizeTraits() {
+        if (!locks.eyeshape) {
+            activeParts.eye = Math.random() > 0.5 ? 'Eyes_LQ' : 'Eyelash_LQ_Mesh';
+            currentEyeShape = eyeTextureList[Math.floor(Math.random() * eyeTextureList.length)];
+            document.getElementById('eyeShapeSelect').value = currentEyeShape;
+        }
+        
+        if (!locks.horn) activeParts.horn = hornList[Math.floor(Math.random() * hornList.length)];
+        if (!locks.spine) activeParts.spine = spineList[Math.floor(Math.random() * spineList.length)];
+        if (!locks.wing) activeParts.wing = wingList[Math.floor(Math.random() * wingList.length)];
+        if (!locks.tail) activeParts.tail = tailList[Math.floor(Math.random() * tailList.length)];
+        if (!locks.pattern) {
+            const idx = Math.floor(Math.random() * 6);
+            currentPattern = `Dragon_Pattern0${idx}_HQ.png`;
+        }
+        
+        updateAll();
+    }
+
+    async function processTexture(imgSrc, isEye = false, forceTertiary = false) {
+        const img = new Image(); img.crossOrigin = "anonymous"; img.src = imgSrc;
+        await img.decode();
+        offscreenCanvas.width = img.width; offscreenCanvas.height = img.height;
+        offscreenCtx.drawImage(img, 0, 0);
+        const imageData = offscreenCtx.getImageData(0, 0, offscreenCanvas.width, offscreenCanvas.height), data = imageData.data;
+        
+        for (let i = 0; i < data.length; i += 4) {
+            const r = data[i], g = data[i+1], b = data[i+2];
+            if (isEye) {
+                if (r > 120 && g > 100) {
+                    const factor = (r + g) / 510;
+                    data[i] = colors.eye.r * factor; data[i+1] = colors.eye.g * factor; data[i+2] = colors.eye.b * factor;
+                } else { data[i] = 0; data[i+1] = 0; data[i+2] = 0; }
+                data[i+3] = 255;
+            } else if (forceTertiary) {
+                // For Horns/Spines: Apply Tertiary color to visible pixels
+                const lum = (0.299 * r + 0.587 * g + 0.114 * b) / 255;
+                if (lum > 0.05) {
+                    data[i] = colors.tertiary.r * lum; data[i+1] = colors.tertiary.g * lum; data[i+2] = colors.tertiary.b * lum;
+                }
+            } else {
+                const lum = (0.299 * r + 0.587 * g + 0.114 * b) / 255;
+                if (lum < 0.03) continue;
+                let target = null;
+                if (r > 60 && r > g * 1.5 && r > b * 1.5) target = colors.primary;
+                else if (g > 70 && ((r > 70) || (g > r * 1.1)) && b < 170) target = colors.secondary;
+                else if (b > 50 || (r > 100 && b > 100)) target = colors.tertiary;
+                if (target) { data[i] = target.r; data[i+1] = target.g; data[i+2] = target.b; }
+            }
+        }
+        offscreenCtx.putImageData(imageData, 0, 0);
+        return offscreenCanvas.toDataURL();
+    }
+
+    function togglePart(type, name) {
+        activeParts[type] = name;
+        if (!main.model) return;
+        const sceneSymbol = Object.getOwnPropertySymbols(main).find(s => s.description === 'scene');
+        const scene = main[sceneSymbol];
+        if (!scene) return;
+        scene.traverse((obj) => {
+            if (obj.isMesh || obj.isGroup) {
+                const nodeName = obj.name.toLowerCase();
+                if (type === 'eye') {
+                    if(nodeName.includes('eyes_lq')) obj.visible = (name === 'Eyes_LQ');
+                    if(nodeName.includes('eyelash_lq_mesh')) obj.visible = (name === 'Eyelash_LQ_Mesh');
+                } else {
+                    let list = [];
+                    if(type === 'horn') list = hornList;
+                    if(type === 'spine') list = spineList;
+                    if(type === 'wing') list = wingList;
+                    if(type === 'tail') list = tailList;
+                    if(list.includes(nodeName)) obj.visible = (nodeName === name.toLowerCase());
+                }
+            }
+        });
+    }
+
+    async function updateAll() {
+        if (!main.model) return;
+        const bodyBake = await processTexture(currentPattern);
+        const wingTailBake = await processTexture('Dragon_Wings_Tails.png');
+        const hornSpineBake = await processTexture('Dragon_Horns_Spines.png', false, true);
+        const eyeBake = await processTexture(currentEyeShape, true);
+
+        const materialMap = { 
+            "Mat_DragonBody": bodyBake, 
+            "Mat_Dragon_Wings_Tails": wingTailBake, 
+            "Mat_Dragon_Horns_Spines": hornSpineBake, 
+            "Mat_Eyes": eyeBake 
+        };
+
+        for (const mat of main.model.materials) {
+            const texData = materialMap[mat.name];
+            if (texData) {
+                const tex = await main.createTexture(texData);
+                if(mat.pbrMetallicRoughness.baseColorTexture) mat.pbrMetallicRoughness.baseColorTexture.setTexture(tex);
+                mat.pbrMetallicRoughness.setRoughnessFactor(0.85); 
+                mat.pbrMetallicRoughness.setMetallicFactor(0.0);
+            }
+        }
+        Object.keys(activeParts).forEach(type => togglePart(type, activeParts[type]));
+        const loader = document.getElementById('loading-overlay');
+        if (loader) { loader.style.opacity = '0'; setTimeout(() => loader.remove(), 1000); }
+    }
+
+    function switchPalette(type, paletteName) {
+        const container = document.getElementById(`${type}-container`);
+        container.querySelectorAll('.palette-group').forEach(pg => {
+            pg.classList.toggle('active', pg.getAttribute('data-name') === paletteName);
+        });
+    }
+
+    // --- SETUP COLORS ---
+    ["primary", "secondary", "tertiary", "eye"].forEach(type => {
+        const container = document.getElementById(`${type}-container`);
+        const select = container.previousElementSibling;
+        paletteData.forEach((p, idx) => {
+            const opt = document.createElement('option');
+            opt.value = p.name; opt.textContent = p.name;
+            select.appendChild(opt);
+            const pg = document.createElement('div');
+            pg.className = "palette-group";
+            if(idx === 0) pg.classList.add('active');
+            pg.setAttribute('data-name', p.name);
+            pg.innerHTML = `<div class="color-grid"></div>`;
+            container.appendChild(pg);
+            const grid = pg.querySelector('.color-grid');
+            p.hexes.forEach(hex => {
+                const s = document.createElement('div');
+                s.className = "swatch"; s.style.background = hex;
+                s.onclick = () => { 
+                    const res = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
+                    colors[type] = { r: parseInt(res[1], 16), g: parseInt(res[2], 16), b: parseInt(res[3], 16) }; 
+                    updateAll(); 
+                };
+                grid.appendChild(s);
+            });
+        });
+    });
+
+    function randomizeAll() { randomizeTraits(); randomizeColors(); }
+    function randomizeColors() {
+        ["primary", "secondary", "tertiary", "eye"].forEach(slot => {
+            if (!locks[slot === 'eye' ? 'eye-color' : `${slot}-color`]) {
+                const p = paletteData[Math.floor(Math.random() * paletteData.length)];
+                const hex = p.hexes[Math.floor(Math.random() * p.hexes.length)];
+                const res = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
+                colors[slot] = { r: parseInt(res[1], 16), g: parseInt(res[2], 16), b: parseInt(res[3], 16) };
+            }
+        });
+        updateAll();
+    }
+
+    function changeEyeShape(f) { currentEyeShape = f; updateAll(); }
+    function changePattern(f) { currentPattern = f; updateAll(); }
+
+    main.addEventListener('load', updateAll);
+
+    // Accordion Logic
+    document.querySelectorAll('details').forEach((det) => {
+        det.addEventListener('toggle', () => {
+            if (det.open) {
+                document.querySelectorAll('details').forEach((other) => {
+                    if (other !== det && other.parentElement.className !== 'adv-settings') other.removeAttribute('open');
+                });
+            }
+        });
+    });
+</script>
+</body>
+</html>
