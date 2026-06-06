@@ -11,11 +11,11 @@
         /* --- BRANDED INITIALIZING SCREEN --- */
         #loading-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #000; display: flex; flex-direction: column; justify-content: center; align-items: center; z-index: 100; transition: opacity 0.8s ease; overflow: hidden; }
         .logo-wrap { text-align: center; margin-bottom: 50px; position: relative; z-index: 2; }
-        .sub-logo { font-size: 10px; letter-spacing: 3px; color: #ff4d00; text-transform: uppercase; font-weight: bold; margin-bottom: 5px; display: block; opacity: 0.8; }
-        .main-logo { font-size: 28px; letter-spacing: 6px; color: #fff; text-transform: uppercase; font-weight: 900; text-shadow: 0 0 20px rgba(255, 77, 0, 0.6); }
+        .sub-logo { font-size: 10px; letter-spacing: 3px; color: #00d4ff; text-transform: uppercase; font-weight: bold; margin-bottom: 5px; display: block; opacity: 0.8; }
+        .main-logo { font-size: 28px; letter-spacing: 6px; color: #fff; text-transform: uppercase; font-weight: 900; text-shadow: 0 0 20px rgba(0, 212, 255, 0.6); }
         
         .spinner-container { position: relative; width: 80px; height: 80px; margin-bottom: 25px; }
-        .spin-diamond { position: absolute; width: 10px; height: 16px; background: #ff4d00; box-shadow: 0 0 10px #ff4d00; clip-path: polygon(50% 0%, 100% 50%, 50% 100%, 0% 50%); left: 35px; top: 0; transform-origin: 5px 40px; animation: diamond-spin 1.4s infinite linear; opacity: 0; }
+        .spin-diamond { position: absolute; width: 10px; height: 16px; background: #00d4ff; box-shadow: 0 0 10px #00d4ff; clip-path: polygon(50% 0%, 100% 50%, 50% 100%, 0% 50%); left: 35px; top: 0; transform-origin: 5px 40px; animation: diamond-spin 1.4s infinite linear; opacity: 0; }
         .spin-diamond:nth-child(1) { animation-delay: 0s; opacity: 1; }
         .spin-diamond:nth-child(2) { animation-delay: -0.15s; opacity: 0.7; }
         .spin-diamond:nth-child(3) { animation-delay: -0.30s; opacity: 0.4; }
@@ -25,7 +25,7 @@
 
         .stars { position: absolute; width: 100%; height: 100%; background-image: radial-gradient(1px 1px at 25px 35px, #fff, rgba(0,0,0,0)), radial-gradient(1px 1px at 60px 120px, #fff, rgba(0,0,0,0)), radial-gradient(2px 2px at 180px 190px, #fff, rgba(0,0,0,0)); background-size: 400px 400px; opacity: 0.4; animation: twinkle 5s infinite alternate; }
         .diamond-container { position: absolute; width: 100%; height: 100%; opacity: 0.08; pointer-events: none; }
-        .bg-diamond { position: absolute; background: linear-gradient(135deg, #ff4d00 0%, #9b51e0 100%); clip-path: polygon(50% 0%, 100% 50%, 50% 100%, 0% 50%); animation: pulse 8s infinite ease-in-out; }
+        .bg-diamond { position: absolute; background: linear-gradient(135deg, #00d4ff 0%, #9b51e0 100%); clip-path: polygon(50% 0%, 100% 50%, 50% 100%, 0% 50%); animation: pulse 8s infinite ease-in-out; }
         .shimmer-sweep { position: absolute; top: 0; left: -100%; width: 60%; height: 100%; background: linear-gradient(90deg, transparent, rgba(255,255,255,0.03), transparent); transform: skewX(-20deg); animation: sweep 6s infinite; }
         @keyframes twinkle { from { opacity: 0.2; } to { opacity: 0.6; } }
         @keyframes sweep { 0% { left: -120%; } 100% { left: 220%; } }
@@ -36,27 +36,27 @@
         .viewer-container { flex: 1; position: relative; background: radial-gradient(#333, #000); }
         model-viewer { width: 100%; height: 100%; --poster-color: transparent; }
         
-        .sidebar { width: 320px; background: #000; border-left: 2px solid #ff4d00; display: flex; flex-direction: column; overflow-y: auto; padding: 10px; transition: all 0.3s ease; box-shadow: -5px 0 20px rgba(255, 77, 0, 0.2); }
+        .sidebar { width: 320px; background: #000; border-left: 2px solid #00d4ff; display: flex; flex-direction: column; overflow-y: auto; padding: 10px; transition: all 0.3s ease; box-shadow: -5px 0 20px rgba(0, 212, 255, 0.2); }
         
         .disclaimer-text { font-size: 9px; color: #555; text-align: center; margin-bottom: 10px; text-transform: uppercase; letter-spacing: 1px; }
 
         .random-box { display: grid; grid-template-columns: 1fr; gap: 5px; margin-bottom: 10px; padding-bottom: 10px; border-bottom: 1px solid #222; }
-        .rnd-btn { background: #ff4d00; color: #000; border: none; padding: 10px; font-weight: bold; font-size: 10px; cursor: pointer; border-radius: 4px; text-transform: uppercase; transition: 0.3s; }
-        .rnd-btn:hover { background: #fff; box-shadow: 0 0 10px #ff4d00; }
+        .rnd-btn { background: #00d4ff; color: #000; border: none; padding: 10px; font-weight: bold; font-size: 10px; cursor: pointer; border-radius: 4px; text-transform: uppercase; transition: 0.3s; }
+        .rnd-btn:hover { background: #fff; box-shadow: 0 0 10px #00d4ff; }
 
         .section-label { font-size: 11px; letter-spacing: 2px; color: #fff; margin-top: 15px; margin-bottom: 5px; padding-left: 5px; }
         .section-divider { border: 0; border-top: 1px solid #333; margin-bottom: 10px; width: 100%; }
 
         details { margin-bottom: 5px; background: #111; border-radius: 4px; border: 1px solid #222; }
-        summary { padding: 12px; font-weight: bold; cursor: pointer; background: #111; display: flex; justify-content: space-between; align-items: center; font-size: 13px; list-style: none; color: #ff4d00; }
+        summary { padding: 12px; font-weight: bold; cursor: pointer; background: #111; display: flex; justify-content: space-between; align-items: center; font-size: 13px; list-style: none; color: #00d4ff; }
         
         .lock-icon { cursor: pointer; font-size: 14px; padding: 0 5px; transition: transform 0.1s; }
         .lock-icon:hover { transform: scale(1.2); }
         .lock-icon.locked { color: #ff4444; }
 
         .button-stack { display: flex; flex-direction: column; padding: 10px; gap: 5px; }
-        button.part-btn { background: #222; color: #ddd; border: 1px solid #333; padding: 10px; text-align: left; border-radius: 4px; cursor: pointer; font-size: 12px; }
-        button.part-btn:hover { background: #333; border-color: #ff4d00; }
+        button.part-btn { background: #222; color: #ddd; border: 1px solid #333; padding: 10px; text-align: left; border-radius: 4px; cursor: pointer; font-size: 12px; text-transform: uppercase; }
+        button.part-btn:hover { background: #333; border-color: #00d4ff; }
         
         select.part-select, .palette-select { background: #222; color: white; border: 1px solid #333; padding: 10px; border-radius: 4px; width: 100%; cursor: pointer; font-size: 12px; }
 
@@ -67,13 +67,13 @@
         .swatch:hover { transform: scale(1.1); border-color: white; }
 
         .adv-settings { padding: 10px; font-size: 11px; color: #888; }
-        .adv-settings h4 { color: #ff4d00; margin: 10px 0 5px 0; text-transform: uppercase; font-size: 10px; }
+        .adv-settings h4 { color: #00d4ff; margin: 10px 0 5px 0; text-transform: uppercase; font-size: 10px; }
         .adv-row { display: flex; align-items: center; gap: 8px; margin-bottom: 4px; }
-        .adv-row input[type="checkbox"] { accent-color: #ff4d00; }
+        .adv-row input[type="checkbox"] { accent-color: #00d4ff; }
 
         @media (max-width: 768px) {
             body { flex-direction: column; }
-            .sidebar { width: 100%; height: 45vh; border-left: none; border-top: 2px solid #ff4d00; }
+            .sidebar { width: 100%; height: 45vh; border-left: none; border-top: 2px solid #00d4ff; }
             .viewer-container { height: 55vh; }
         }
     </style>
@@ -117,7 +117,7 @@
     </details>
 
     <div class="random-box">
-        <button class="rnd-btn" onclick="randomizeAll()" style="background:#fff; border: 2px solid #ff4d00;">Randomize All</button>
+        <button class="rnd-btn" onclick="randomizeAll()" style="background:#fff; border: 2px solid #00d4ff;">Randomize All</button>
         <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 5px; margin-top: 5px;">
             <button class="rnd-btn" onclick="randomizeTraits()">Random Traits</button>
             <button class="rnd-btn" onclick="randomizeColors()">Random Colors</button>
@@ -154,7 +154,19 @@
             <button class="part-btn" onclick="togglePart('eye', 'Eyelash_LQ_Mesh')">Lashes</button>
             <hr style="border:0; border-top:1px solid #333; margin:5px 0;">
             <select id="eyeShapeSelect" class="part-select" onchange="changeEyeShape(this.value)">
-                </select>
+                <option value="Eye00_Texture.png">Ordinary</option>
+                <option value="Eye01_Texture.png">Surprised</option>
+                <option value="Eye02_Texture.png">Cute</option>
+                <option value="Eye03_Texture.png">Creepy</option>
+                <option value="Eye04_Texture.png">Spooky</option>
+                <option value="Eye05_Texture.png">Swirly</option>
+                <option value="Eye06_Texture.png">Blank</option>
+                <option value="Eye07_Texture.png">Crossed Out</option>
+                <option value="Eye08_Texture.png">Starry</option>
+                <option value="Eye09_Texture.png">Lovely</option>
+                <option value="Eye10_Texture.png">Suspicious</option>
+                <option value="Eye11_Texture.png">Striking</option>
+            </select>
         </div>
     </details>
 
@@ -199,6 +211,7 @@
         </div>
     </details>
 
+    <hr class="section-divider" style="margin-top:20px;">
 </div>
 
 <script>
@@ -237,17 +250,9 @@
     const spineList = ['double', 'fractal', 'oceanic', 'pinfeather', 'quilled', 'none'];
     const wingList = ['battleworn', 'classical', 'continuous', 'downy', 'frilled', 'hooked', 'mothlike', 'none'];
     const tailList = ['aquatic', 'bladed', 'chimera', 'feathery', 'finned', 'kaiju', 'serpentine'];
-    const patternList = ['avian', 'nova', 'speckled', 'scorched', 'leviathan', 'jetstream', 'verdant'];
+    const patternNames = ['avian', 'nova', 'speckled', 'scorched', 'leviathan', 'jetstream', 'verdant'];
+    const patternFiles = Array.from({length: 6}, (_, i) => `Dragon_Pattern0${i}_HQ.png`);
     const eyeTextureList = Array.from({length: 12}, (_, i) => `Eye${i.toString().padStart(2, '0')}_Texture.png`);
-
-    const main = document.querySelector('#dragon');
-    let colors = { primary: {r:255, g:255, b:255}, secondary: {r:255, g:255, b:255}, tertiary: {r:255, g:255, b:255}, eye: {r:255, g:255, b:255} };
-    let currentPattern = 'Dragon_Pattern00_HQ.png';
-    let currentEyeShape = 'Eye00_Texture.png';
-    let activeParts = { eye: 'Eyes_LQ', horn: 'sleek', spine: 'double', wing: 'classical', tail: 'serpentine' };
-
-    const offscreenCanvas = document.createElement('canvas');
-    const offscreenCtx = offscreenCanvas.getContext('2d', { willReadFrequently: true });
 
     function toggleLock(event, key) {
         event.preventDefault();
@@ -258,46 +263,75 @@
         el.classList.toggle('locked', locks[key]);
     }
 
-    // --- UI BUILDER ---
-    function buildTraitUI(list, type, containerId) {
-        const cont = document.getElementById(containerId);
-        list.forEach(item => {
+    // Build Trait Buttons UI
+    const traitUIConfig = { 'horn': hornList, 'spine': spineList, 'wing': wingList, 'tail': tailList };
+    Object.keys(traitUIConfig).forEach(type => {
+        const container = document.getElementById(`${type}-buttons`);
+        traitUIConfig[type].forEach(trait => {
             const btn = document.createElement('button');
             btn.className = 'part-btn';
-            btn.textContent = item.toUpperCase();
-            btn.onclick = () => togglePart(type, item);
-            cont.appendChild(btn);
+            btn.textContent = trait;
+            btn.onclick = () => togglePart(type, trait);
+            container.appendChild(btn);
         });
-    }
+    });
 
-    // --- INITIALIZE UI ---
-    buildTraitUI(hornList, 'horn', 'horn-buttons');
-    buildTraitUI(spineList, 'spine', 'spine-buttons');
-    buildTraitUI(wingList, 'wing', 'wing-buttons');
-    buildTraitUI(tailList, 'tail', 'tail-buttons');
-
-    patternList.forEach((p, idx) => {
+    const patContainer = document.getElementById('pattern-buttons');
+    patternNames.forEach((name, idx) => {
         const btn = document.createElement('button');
         btn.className = 'part-btn';
-        btn.textContent = p.toUpperCase();
-        btn.onclick = () => changePattern(`Dragon_Pattern0${idx}_HQ.png`);
-        document.getElementById('pattern-buttons').appendChild(btn);
+        btn.textContent = name;
+        btn.onclick = () => changePattern(patternFiles[idx]);
+        patContainer.appendChild(btn);
     });
 
-    const eyeSelect = document.getElementById('eyeShapeSelect');
-    const eyeLabels = ["Ordinary", "Surprised", "Cute", "Creepy", "Spooky", "Swirly", "Blank", "Crossed Out", "Starry", "Lovely", "Suspicious", "Striking"];
-    eyeTextureList.forEach((tex, idx) => {
-        const opt = document.createElement('option');
-        opt.value = tex; opt.textContent = eyeLabels[idx];
-        eyeSelect.appendChild(opt);
+    const dbg = document.getElementById('diamond-bg');
+    for(let i=0; i<35; i++) {
+        const d = document.createElement('div');
+        d.className = 'bg-diamond';
+        const size = 100 + Math.random() * 120;
+        d.style.width = `${size}px`; d.style.height = `${size * 1.5}px`;
+        d.style.left = `${Math.random() * 100}%`; d.style.top = `${Math.random() * 100}%`;
+        d.style.animationDelay = `${Math.random() * 5}s`;
+        dbg.appendChild(d);
+    }
+
+    const main = document.querySelector('#dragon');
+    let colors = { primary: {r:255, g:255, b:255}, secondary: {r:255, g:255, b:255}, tertiary: {r:255, g:255, b:255}, eye: {r:255, g:255, b:255} };
+    let currentPattern = 'Dragon_Pattern00_HQ.png';
+    let currentEyeShape = 'Eye00_Texture.png';
+    let activeParts = { eye: 'Eyes_LQ', horn: 'sleek', spine: 'double', wing: 'classical', tail: 'finned' };
+
+    const offscreenCanvas = document.createElement('canvas');
+    const offscreenCtx = offscreenCanvas.getContext('2d', { willReadFrequently: true });
+
+    // Setup Exclusions and Filters UI
+    const traitExContainer = document.getElementById('trait-exclusions');
+    const paletteFilterContainer = document.getElementById('palette-filters');
+    const traitCategories = { Horns: hornList, Spines: spineList, Wings: wingList, Tail: tailList };
+    
+    Object.keys(traitCategories).forEach(cat => {
+        const h = document.createElement('div'); h.style.margin = "5px 0"; h.style.fontWeight = "bold"; h.textContent = cat;
+        traitExContainer.appendChild(h);
+        traitCategories[cat].forEach(t => {
+            const row = document.createElement('div'); row.className = "adv-row";
+            row.innerHTML = `<input type="checkbox" id="ex-${t}"> <label for="ex-${t}">${t.toUpperCase()}</label>`;
+            traitExContainer.appendChild(row);
+        });
     });
 
-    // --- LOGIC ---
+    ["eye-color", "primary-color", "secondary-color", "tertiary-color"].forEach(slot => {
+        const h = document.createElement('div'); h.style.margin = "5px 0"; h.style.fontWeight = "bold"; h.textContent = slot.replace("-", " ").toUpperCase();
+        paletteFilterContainer.appendChild(h);
+        paletteData.forEach(p => {
+            const row = document.createElement('div'); row.className = "adv-row";
+            row.innerHTML = `<input type="checkbox" class="pal-check-${slot}" data-palette="${p.name}"> <label>${p.name}</label>`;
+            paletteFilterContainer.appendChild(row);
+        });
+    });
+
     function getFilteredList(list) {
-        const checked = Array.from(document.querySelectorAll(`[id^="ex-"]`))
-                            .filter(i => i.checked)
-                            .map(i => i.id.replace('ex-', ''));
-        return list.filter(item => !checked.includes(item));
+        return list.filter(item => !document.getElementById(`ex-${item}`).checked);
     }
 
     function randomizeTraits() {
@@ -307,19 +341,41 @@
             document.getElementById('eyeShapeSelect').value = currentEyeShape;
         }
         
-        if (!locks.horn) activeParts.horn = hornList[Math.floor(Math.random() * hornList.length)];
-        if (!locks.spine) activeParts.spine = spineList[Math.floor(Math.random() * spineList.length)];
-        if (!locks.wing) activeParts.wing = wingList[Math.floor(Math.random() * wingList.length)];
-        if (!locks.tail) activeParts.tail = tailList[Math.floor(Math.random() * tailList.length)];
-        if (!locks.pattern) {
-            const idx = Math.floor(Math.random() * 6);
-            currentPattern = `Dragon_Pattern0${idx}_HQ.png`;
-        }
+        const hList = getFilteredList(hornList);
+        const sList = getFilteredList(spineList);
+        const wList = getFilteredList(wingList);
+        const tList = getFilteredList(tailList);
+
+        if (!locks.horn && hList.length) activeParts.horn = hList[Math.floor(Math.random() * hList.length)];
+        if (!locks.spine && sList.length) activeParts.spine = sList[Math.floor(Math.random() * sList.length)];
+        if (!locks.wing && wList.length) activeParts.wing = wList[Math.floor(Math.random() * wList.length)];
+        if (!locks.tail && tList.length) activeParts.tail = tList[Math.floor(Math.random() * tList.length)];
+        if (!locks.pattern) currentPattern = patternFiles[Math.floor(Math.random() * patternFiles.length)];
         
         updateAll();
     }
 
-    async function processTexture(imgSrc, isEye = false, forceTertiary = false) {
+    function getRndColor(slot) {
+        const checks = document.querySelectorAll(`.pal-check-${slot}:checked`);
+        let pools = (checks.length > 0) ? paletteData.filter(p => Array.from(checks).map(c => c.getAttribute('data-palette')).includes(p.name)) : paletteData;
+        const chosenPalette = pools[Math.floor(Math.random() * pools.length)];
+        return hexToRgb(chosenPalette.hexes[Math.floor(Math.random() * chosenPalette.hexes.length)]);
+    }
+
+    function hexToRgb(hex) {
+        const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
+        return result ? { r: parseInt(result[1], 16), g: parseInt(result[2], 16), b: parseInt(result[3], 16) } : null;
+    }
+
+    function randomizeColors() {
+        if (!locks['primary-color']) colors.primary = getRndColor('primary-color');
+        if (!locks['secondary-color']) colors.secondary = getRndColor('secondary-color');
+        if (!locks['tertiary-color']) colors.tertiary = getRndColor('tertiary-color');
+        if (!locks['eye-color']) colors.eye = getRndColor('eye-color');
+        updateAll();
+    }
+
+    async function processTexture(imgSrc, mode = 'standard') {
         const img = new Image(); img.crossOrigin = "anonymous"; img.src = imgSrc;
         await img.decode();
         offscreenCanvas.width = img.width; offscreenCanvas.height = img.height;
@@ -328,19 +384,21 @@
         
         for (let i = 0; i < data.length; i += 4) {
             const r = data[i], g = data[i+1], b = data[i+2];
-            if (isEye) {
+            
+            if (mode === 'eye') {
                 if (r > 120 && g > 100) {
                     const factor = (r + g) / 510;
                     data[i] = colors.eye.r * factor; data[i+1] = colors.eye.g * factor; data[i+2] = colors.eye.b * factor;
                 } else { data[i] = 0; data[i+1] = 0; data[i+2] = 0; }
                 data[i+3] = 255;
-            } else if (forceTertiary) {
-                // For Horns/Spines: Apply Tertiary color to visible pixels
+            } 
+            else if (mode === 'tertiary-only') {
+                // For Horns/Spines: Apply Tertiary to any visible greyscale/colored areas
                 const lum = (0.299 * r + 0.587 * g + 0.114 * b) / 255;
-                if (lum > 0.05) {
-                    data[i] = colors.tertiary.r * lum; data[i+1] = colors.tertiary.g * lum; data[i+2] = colors.tertiary.b * lum;
-                }
-            } else {
+                if (lum < 0.03) continue;
+                data[i] = colors.tertiary.r * lum; data[i+1] = colors.tertiary.g * lum; data[i+2] = colors.tertiary.b * lum;
+            }
+            else {
                 const lum = (0.299 * r + 0.587 * g + 0.114 * b) / 255;
                 if (lum < 0.03) continue;
                 let target = null;
@@ -367,12 +425,12 @@
                     if(nodeName.includes('eyes_lq')) obj.visible = (name === 'Eyes_LQ');
                     if(nodeName.includes('eyelash_lq_mesh')) obj.visible = (name === 'Eyelash_LQ_Mesh');
                 } else {
-                    let list = [];
-                    if(type === 'horn') list = hornList;
-                    if(type === 'spine') list = spineList;
-                    if(type === 'wing') list = wingList;
-                    if(type === 'tail') list = tailList;
-                    if(list.includes(nodeName)) obj.visible = (nodeName === name.toLowerCase());
+                    let catMatch = false;
+                    if(type === 'horn' && hornList.includes(nodeName)) catMatch = true;
+                    if (type === 'spine' && spineList.includes(nodeName)) catMatch = true;
+                    if (type === 'wing' && wingList.includes(nodeName)) catMatch = true;
+                    if (type === 'tail' && tailList.includes(nodeName)) catMatch = true;
+                    if(catMatch) obj.visible = (nodeName === name.toLowerCase());
                 }
             }
         });
@@ -381,14 +439,14 @@
     async function updateAll() {
         if (!main.model) return;
         const bodyBake = await processTexture(currentPattern);
-        const wingTailBake = await processTexture('Dragon_Wings_Tails.png');
-        const hornSpineBake = await processTexture('Dragon_Horns_Spines.png', false, true);
-        const eyeBake = await processTexture(currentEyeShape, true);
-
+        const wtBake = await processTexture('Mat_Dragon_Wings_Tails.png');
+        const hsBake = await processTexture('Mat_Dragon_Horns_Spines.png', 'tertiary-only');
+        const eyeBake = await processTexture(currentEyeShape, 'eye');
+        
         const materialMap = { 
             "Mat_DragonBody": bodyBake, 
-            "Mat_Dragon_Wings_Tails": wingTailBake, 
-            "Mat_Dragon_Horns_Spines": hornSpineBake, 
+            "Mat_Dragon_Wings_Tails": wtBake, 
+            "Mat_Dragon_Horns_Spines": hsBake, 
             "Mat_Eyes": eyeBake 
         };
 
@@ -408,12 +466,9 @@
 
     function switchPalette(type, paletteName) {
         const container = document.getElementById(`${type}-container`);
-        container.querySelectorAll('.palette-group').forEach(pg => {
-            pg.classList.toggle('active', pg.getAttribute('data-name') === paletteName);
-        });
+        container.querySelectorAll('.palette-group').forEach(pg => pg.classList.toggle('active', pg.getAttribute('data-name') === paletteName));
     }
 
-    // --- SETUP COLORS ---
     ["primary", "secondary", "tertiary", "eye"].forEach(type => {
         const container = document.getElementById(`${type}-container`);
         const select = container.previousElementSibling;
@@ -421,6 +476,7 @@
             const opt = document.createElement('option');
             opt.value = p.name; opt.textContent = p.name;
             select.appendChild(opt);
+
             const pg = document.createElement('div');
             pg.className = "palette-group";
             if(idx === 0) pg.classList.add('active');
@@ -431,44 +487,23 @@
             p.hexes.forEach(hex => {
                 const s = document.createElement('div');
                 s.className = "swatch"; s.style.background = hex;
-                s.onclick = () => { 
-                    const res = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
-                    colors[type] = { r: parseInt(res[1], 16), g: parseInt(res[2], 16), b: parseInt(res[3], 16) }; 
-                    updateAll(); 
-                };
+                s.onclick = () => { colors[type] = hexToRgb(hex); updateAll(); };
                 grid.appendChild(s);
             });
         });
     });
 
     function randomizeAll() { randomizeTraits(); randomizeColors(); }
-    function randomizeColors() {
-        ["primary", "secondary", "tertiary", "eye"].forEach(slot => {
-            if (!locks[slot === 'eye' ? 'eye-color' : `${slot}-color`]) {
-                const p = paletteData[Math.floor(Math.random() * paletteData.length)];
-                const hex = p.hexes[Math.floor(Math.random() * p.hexes.length)];
-                const res = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
-                colors[slot] = { r: parseInt(res[1], 16), g: parseInt(res[2], 16), b: parseInt(res[3], 16) };
-            }
-        });
-        updateAll();
-    }
-
     function changeEyeShape(f) { currentEyeShape = f; updateAll(); }
     function changePattern(f) { currentPattern = f; updateAll(); }
 
-    main.addEventListener('load', updateAll);
-
-    // Accordion Logic
     document.querySelectorAll('details').forEach((det) => {
         det.addEventListener('toggle', () => {
-            if (det.open) {
-                document.querySelectorAll('details').forEach((other) => {
-                    if (other !== det && other.parentElement.className !== 'adv-settings') other.removeAttribute('open');
-                });
-            }
+            if (det.open) document.querySelectorAll('details').forEach((other) => { if (other !== det) other.removeAttribute('open'); });
         });
     });
+
+    main.addEventListener('load', updateAll);
 </script>
 </body>
 </html>
